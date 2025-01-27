@@ -26,11 +26,13 @@ jobs:
         npm install electron-builder -g
         
     - name: Build macOS
-      run: npm run build
+      run: |
+        electron-builder --mac dmg
+        ls -la dist/
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Release
+        
+    - name: Upload Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       env:
