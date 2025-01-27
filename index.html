@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>九爱音频_音效助手V1.8正式版</title>
+    <link rel="stylesheet" href="ui/styles/main.css">
+    <link rel="stylesheet" href="ui/styles/toast.css">
+    <link rel="stylesheet" href="ui/styles/shortcutDialog.css">
+    <script>
+        // 检查样式是否加载
+        window.addEventListener('load', () => {
+            const styles = document.styleSheets;
+            console.log('Loaded stylesheets:', styles.length);
+            for (let i = 0; i < styles.length; i++) {
+                console.log(`Style ${i}:`, styles[i].href);
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="title-bar">
+        <div class="title">九爱音频_音效助手V1.8正式版</div>
+        <div class="controls">
+            <button class="minimize-btn">—</button>
+            <button class="close-btn">×</button>
+            
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- 顶部导航 -->
+        <nav class="nav-menu">
+            <a class="nav-item active">主持</a>
+            <a class="nav-item">喊麦</a>
+            <a class="nav-item">搞笑</a>
+            <a class="nav-item">游戏</a>
+            <a class="nav-item">生活</a>
+            <a class="nav-item">DIY</a>
+            <a class="nav-item">DIY2</a>
+            <a class="nav-item">DIY3</a>
+        </nav>
+
+        <!-- 音效按钮网格 -->
+        <div class="sound-grid">
+            <button class="add-btn">+</button>
+        </div>
+    </div>
+
+    <!-- 添加底部控制面板 -->
+    <div class="control-bar-wrapper">
+        <div class="control-bar">
+            <!-- 第一行控制按钮和音量 -->
+            <div class="control-buttons">
+                <!-- 音量控制 -->
+                <div class="volume-control">
+                    <span>音效音量</span>
+                    <div class="volume-slider">
+                        <input type="range" min="0" max="100" value="100">
+                        <span class="volume-value">64</span>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button id="btnTopmost" class="control-btn">窗口置顶</button>
+                    <button id="btnPause" class="control-btn">暂停播放</button>
+                    <div id="pauseShortcut">测试文字</div>
+                    <button id="btnStop" class="control-btn">停止播放</button>
+                    <div id="stopShortcut">测试文字</div>
+                </div>
+            </div>
+            
+            <!-- 其他控制选项 -->
+            <div class="options">
+           
+                
+                <!-- 输出设备选择 -->
+                <div class="channel">
+                    <span>通道选择</span>
+                    <div class="custom-select">
+                        <div class="select-selected" id="selectedDevice">默认设备</div>
+                        <div class="select-items" id="deviceList"></div>
+                    </div>
+                </div>
+                <!-- 开关控制区 -->
+                <div class="switches">
+                    <div class="switch-item">
+                        <span>快捷键</span>
+                        <label class="switch">
+                            <input type="checkbox" id="shortcutSwitch" class="switch-input">
+                            <span class="slider"></span>
+                        </label>
+                        <div id="shortcutTip">测试文字</div>
+                    </div>
+                    <div class="switch-item">
+                        <span>重复音效</span>
+                        <label class="switch">
+                            <input type="checkbox" id="repeatSwitch" class="switch-input">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="src/renderer.js"></script>
+</body>
+</html> 

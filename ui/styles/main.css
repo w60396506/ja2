@@ -1,0 +1,928 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: transparent !important;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* ExUI 风格变量 */
+:root {
+    --ex-primary: #2B88FF;
+    --ex-bg: #F5F6FA;
+    --ex-text: #1F2329;
+    --ex-border: #E5E6EB;
+    --ex-radius: 4px;
+    --ex-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* 标题栏 */
+.title-bar {
+    height: 48px;
+    background: var(--ex-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    -webkit-app-region: drag;
+    padding: 0 16px;
+    border-radius: var(--ex-radius) var(--ex-radius) 0 0;
+}
+
+.title {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.version-btn {
+    margin-left: 12px;
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+    transition: background 0.2s;
+}
+
+.version-btn:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+.controls {
+    margin-left: auto;
+    -webkit-app-region: no-drag;
+    display: flex;
+    gap: 8px;
+}
+
+.controls button {
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.controls button:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* 导航菜单 */
+.nav-menu {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    background: #2B88FF;
+    padding: 0 12px;
+    box-shadow: 0 1px 3px rgba(37,135,238,0.2);
+    gap: 1px;
+}
+
+.nav-item {
+    padding: 8px 12px;
+    color: rgba(255,255,255,0.85);
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.nav-item:hover {
+    color: white;
+    background: rgba(255,255,255,0.1);
+}
+
+.nav-item.active {
+    color: white;
+    background: rgba(255,255,255,0.15);
+}
+
+/* 主内容区 */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 436px;
+    background: transparent;
+    position: relative;
+}
+
+/* 音效按钮网格 */
+.sound-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 78px);
+    justify-content: center;
+    gap: 10px 4px;
+    grid-auto-rows: 40px;
+    padding: 12px 1px 20px 1px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #FFFFFF;
+    height: calc(100vh - 200px);/* 调节这里可以调节按钮区域的高度*/
+    width: 422px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+/* 滚动条样式 */
+.sound-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sound-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sound-grid::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.1);
+    border-radius: 3px;
+}
+
+.sound-grid::-webkit-scrollbar-thumb:hover {
+    background: rgba(0,0,0,0.2);
+}
+
+/* 按钮样式 */
+.sound-btn {
+    height: 40px;
+    width: 78px;
+    min-width: 78px;
+    max-width: 78px;
+    border: 1px solid var(--ex-border);
+    border-radius: var(--ex-radius);
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--ex-shadow);
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    padding: 0 8px;  /* 增加一点内边距 */
+    display: block !important;  /* 改为 block 而不是 flex */
+    line-height: 35px;  /* 与高度相同，实现垂直居中 */
+    text-align: center;  /* 水平居中 */
+} 
+
+.sound-btn:hover {
+    border-color: var(--ex-primary);
+    color: var(--ex-primary);
+    transform: translateY(-1px);
+    background-color: #FFFFFF;
+}
+
+.sound-btn:active {
+    transform: translateY(0);
+    background-color: #FFFFFF;
+}
+
+/* 底部控制栏 */
+.control-bar-wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* 控制栏 */
+.control-bar {
+    position: relative;
+    padding: 12px 16px;
+    color: white;
+    height: 106px;
+    pointer-events: auto;
+}
+
+/* 控制栏背景 */
+.control-bar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: var(--ex-primary);
+    z-index: -1;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 var(--ex-radius) var(--ex-radius);
+}
+
+/* 选项区域 */
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: white;
+    margin-top: -14px;
+    padding: 0 4px;
+    opacity: 0.9;
+}
+
+/* 复选框组 */
+.checkbox-group {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: white;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+    font-size: 12px;
+}
+
+/* 下拉框容器样式 */
+.select-wrapper {
+    width: 269px;
+    position: relative;
+    display: inline-block;
+}
+
+/* 下拉框样式 */
+.channel select {
+    width: 269px;
+    height: 23px;
+    padding: 0 20px 0 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: var(--ex-radius);
+    background: #2B88FF;
+    color: white;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+}
+
+.channel select:hover {
+    background-color: #3994FF;
+}
+
+/* 下拉选项样式 */
+select option {
+    background: white;
+    color: #333;
+    padding: 4px 8px;
+    font-size: 12px;
+    max-width: 269px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* 强制下拉列表宽度 */
+select::-webkit-list-box {
+    width: 269px !important;
+}
+
+select::-webkit-calendar-picker-indicator {
+    display: none !important;
+}
+
+/* 添加按钮 */
+/* 
+.add-btn {
+    height: 40px;
+    width: 78px;
+    min-width: 7px;
+    max-width: 7px;
+    border: 1px solid var(--ex-border);
+    border-radius: var(--ex-radius);
+    background: white;
+    color: #999;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--ex-shadow);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 2px;
+}
+
+.add-btn:hover {
+    border-color: var(--ex-primary);
+    color: var(--ex-primary);
+    transform: translateY(-1px);
+}
+
+.add-btn:active {
+    transform: translateY(0);
+    background: #ffffff;
+}
+
+/* 按钮容器样式 */
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+/* 快捷键标签样式 */
+.kuaijiejianbiaoqian {
+    font-size: 11px;
+    text-align: center;
+    height: 5px;
+    line-height: 16px;
+    color: #ff5043;
+}
+
+/* 确保两种按钮样式完全一致 */
+.sound-btn,
+.add-btn {
+    height: 40px;
+    width: 78px;
+    min-width: 78px;
+    max-width: 78px;
+    border: 1px solid var(--ex-border);
+    border-radius: var(--ex-radius);
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--ex-shadow);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 2px;
+    display: flex;          /* 添加这些确保内容居中 */
+    align-items: center;    /* 垂直居中 */
+    justify-content: center;/* 水平居中 */
+} 
+
+.add-btn {
+    height: 32px;
+    margin-top: 0px;
+    width: 78px;
+    min-width: 78px;
+    max-width: 78px;
+} 
+
+
+/* 自定义下拉框样式 */
+.custom-select {
+    position: relative;
+    width: 240px;  /* 调整下拉框宽度 */
+    height: 23px;
+    margin-top: -4px;
+}
+
+.select-selected {
+    width: 100%;
+    height: 100%;
+    padding: 0 20px 0 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: var(--ex-radius);
+    background: #2B88FF;
+    color: white;
+    font-size: 13px;
+    line-height: 21px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+}
+
+.select-selected:hover {
+    background-color: #3994FF;
+}
+
+.select-items {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 4px;
+    margin-bottom: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: none;
+    z-index: 1000;
+}
+
+.select-items.show {
+    display: block;
+}
+
+.select-item {
+    padding: 4px 8px;
+    color: #333;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 269px;
+    box-sizing: border-box;
+}
+
+.select-item:hover {
+    background: #f5f5f5;
+}
+
+/* 下拉框滚动条样式 */
+.select-items::-webkit-scrollbar {
+    width: 6px;
+}
+
+.select-items::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.select-items::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.1);
+    border-radius: 3px;
+}
+
+.select-items::-webkit-scrollbar-thumb:hover {
+    background: rgba(0,0,0,0.2);
+} 
+
+
+
+.control-buttons span {
+    margin-right: 10px;
+    color: white;
+    writing-mode: horizontal-tb;
+    transform: none;
+}
+
+.control-btn {
+    padding: 0 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 2px;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    height: 24px;
+    min-width: 70px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    position: absolute;
+}
+
+.control-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.control-btn.active {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.3);
+} 
+
+/* 音量文字样式 - 更具体的选择器 */
+.volume-control > span {
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+    color: white;
+    display: inline-block;
+    font-size: 12px;
+    line-height: 1;
+    height: 12px;
+    margin-top: 1px;     /* 上边距 */
+    margin-bottom: 2px;  /* 下边距 */
+    margin-left: -10px;   /* 左边距 */
+    margin-right: 10px;  /* 右边距 */
+}
+
+.control-buttons span {
+    margin-right: 10px;
+    color: white;
+} 
+
+
+
+.volume-control span {
+    color: white;
+    font-size: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin-right: 6px;
+}
+
+/* 音量控制容器 */
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: -4px;
+    margin-right: 8px;
+}
+
+/* 音量滑块容器 */
+.volume-slider {
+    display: flex;
+    align-items: center;
+
+    width: 100px;
+    margin-right: 4px;
+}
+
+/* 音量滑块 */
+.volume-slider input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;   /* 恢复正常高度 */
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+}
+
+/* 滑块轨道 */
+.volume-slider input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;   /* 恢复正常高度 */
+    border-radius: 2px;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: linear-gradient(to right, 
+        rgba(255,255,255,0.8) 0%, 
+        rgba(255,255,255,0.8) var(--value), 
+        rgba(255,255,255,0.2) var(--value), 
+        rgba(255,255,255,0.2) 100%
+    );
+}
+
+/* 滑块手柄 */
+.volume-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    margin-top: -4px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+    border: none;
+    outline: none;
+    position: relative;
+    z-index: 3;
+}
+
+/* 滑块手柄悬浮效果 */
+.volume-slider input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* 滑块手柄激活效果 */
+.volume-slider input[type="range"]::-webkit-slider-thumb:active {
+    transform: scale(0.95);
+}
+
+.volume-value {
+    color: white;
+    font-size: 12px;
+    min-width: 24px;
+    text-align: right;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin-left: -2px;
+    position: relative;
+    z-index: 1;
+} 
+
+/* 控制栏布局 */
+.control-buttons {
+    position: relative;
+    align-items: center;
+    padding: 8px 4px;
+    height: 45px;
+    margin-top: -10px;
+} 
+
+
+
+/* 通道选择 */
+.channel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 1px;
+    width: 320px;
+    position: absolute;
+    left: 12px;  /* 减小左边距 */
+    top: 44px;
+}
+
+.channel span {
+    color: white;
+    font-size: 12px;
+    margin-right: 8px;  /* 与下拉框的间距 */
+    margin-top: 1px;    /* 上边距 */
+    margin-left: -8px;  /* 添加左边距，增加这个值会让文字往右移 */
+    display: inline-block;
+} 
+
+
+
+/* 开关控制区 */
+.switches {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;  /* 两端对齐 */
+    left: 12px;  /* 左边的快捷键开关 */
+    right: 16px;  /* 右边的重复音效开关 */
+    top: 65px;
+    gap: 20px;
+}
+
+.switch-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.switch-item span {
+    color: white;
+    font-size: 13px;
+}
+
+/* 开关样式 */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    position: absolute;
+    width: 0;
+    height: 0;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: .3s;
+    border-radius: 20px;
+}
+
+.switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+.switch input:checked + .slider {
+    background-color: #EDA426;
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(22px);
+} 
+
+/* 暂停播放按钮 */
+#btnPause {
+    position: absolute;
+    padding: 0 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 2px;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    height: 24px;
+    min-width: 70px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    left: 260px;
+    top: 1px;
+    z-index: 1;
+
+
+}
+
+/* 停止播放按钮 */
+#btnStop {
+    position: absolute;
+    padding: 0 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius:2px;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    height: 24px;
+    min-width: 70px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    left: 340px;
+    top: 1px;
+    z-index: 1;
+
+}
+
+/* 按钮悬浮效果 */
+#btnTopmost:hover,
+#btnPause:hover,
+#btnStop:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* 按钮激活效果 */
+#btnTopmost.active,
+#btnPause.active,
+#btnStop.active {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.3);
+} 
+
+/* 窗口置顶按钮 */
+#btnTopmost {
+    position: absolute;
+    padding: 0 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 2px;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    height: 24px;
+    min-width: 70px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    left: 180px;
+    top: 1px;
+    z-index: 1;
+}
+
+/* 暂停播放按钮下方的快捷键标签 */
+#pauseShortcut {
+    position: absolute;
+    left: 260px;
+    top: 26px;
+    width: 70px;
+    height: 12px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 11px;
+    text-align: center;
+    line-height: 12px;
+    z-index: 1;
+}
+
+/* 停止播放按钮下方的快捷键标签 */
+#stopShortcut {
+    position: absolute;
+    left: 340px;
+    top: 26px;
+    width: 70px;
+    height: 12px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 11px;
+    text-align: center;
+    line-height: 12px;
+    z-index: 1;
+}
+
+/* 快捷键开关后面的提示标签 */
+#shortcutTip {
+    position: absolute;
+    left: 120px;
+    top: 4px;
+    width: 70px;
+    height: 12px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 11px;
+    text-align: left;
+    line-height: 12px;
+    z-index: 1;
+}
+
+/* 右键菜单样式 */
+.context-menu {
+    position: fixed;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 4px 0;
+    min-width: 120px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+}
+
+/* 菜单箭头样式 */
+.context-menu::before,
+.context-menu::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: solid transparent;
+    pointer-events: none;
+}
+
+/* 箭头外层 */
+.context-menu::before {
+    border-width: 7px;
+    margin-left: 0px;
+}
+
+/* 箭头内层 */
+.context-menu::after {
+    border-width: 6px;
+    margin-left: 0px;
+}
+
+/* 向下箭头样式 */
+.context-menu.arrow-bottom::before {
+    top: -14px;
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.context-menu.arrow-bottom::after {
+    top: -12px;
+    border-bottom-color: white;
+}
+
+/* 向上箭头样式 */
+.context-menu.arrow-top::before {
+    bottom: -14px;
+    border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+.context-menu.arrow-top::after {
+    bottom: -12px;
+    border-top-color: white;
+}
+
+/* 菜单项样式 */
+.menu-item {
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.menu-item:hover {
+    background: #f5f5f5;
+}
+
+ 

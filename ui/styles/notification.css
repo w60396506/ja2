@@ -1,0 +1,46 @@
+.notification {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    padding: 12px 24px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 4px;
+    font-size: 13px;
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.notification-title {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.notification-message {
+    opacity: 0.9;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.notification.hide {
+    animation: fadeOut 0.3s ease-out forwards;
+} 
