@@ -30,7 +30,8 @@
         }
       ],
       "icon": "build/icon.icns",
-      "minimumSystemVersion": "10.13.6"
+      "minimumSystemVersion": "10.13.6",
+      "category": "public.app-category.utilities"
     },
     "files": [
       "**/*",
