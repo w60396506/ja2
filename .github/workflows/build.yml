@@ -25,13 +25,7 @@ jobs:
         
     - name: Build macOS
       run: |
-        electron-builder --mac dir
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
-    - name: Create DMG
-      run: |
-        electron-builder --mac dmg --config.mac.identity=null
+        electron-builder --mac --publish never --config electron-builder.yml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
