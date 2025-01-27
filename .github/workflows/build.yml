@@ -5,12 +5,6 @@ on:
     branches: [ main ]
     tags:
       - 'v*'
-  pull_request:
-    branches: [ main ]
-
-permissions:
-  contents: write
-  packages: write
 
 jobs:
   build:
@@ -18,8 +12,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
     
     - name: Setup Node.js
       uses: actions/setup-node@v2
@@ -32,20 +24,23 @@ jobs:
         npm install electron-builder -g
         
     - name: Build macOS
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        npm run build
-        electron-builder --mac
-      
+        electron-builder --mac dir
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Create DMG
+      run: |
+        electron-builder --mac dmg --config.mac.identity=null
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         files: |
           dist/*.dmg
-          dist/*.zip
-        draft: false
-        prerelease: false 
+        draft: false 
