@@ -20,7 +20,23 @@ jobs:
     - name: Install dependencies
       run: npm install
         
+    - name: Check directory structure
+      run: |
+        pwd
+        ls -la
+        cat package.json
+        
     - name: Build macOS
-      run: npm run build
+      run: |
+        npm run build
+        echo "Build completed"
+        ls -la
+        ls -la dist || echo "No dist directory"
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Upload DMG
+      uses: actions/upload-artifact@v2
+      with:
+        name: mac-dmg
+        path: dist/*.dmg 
