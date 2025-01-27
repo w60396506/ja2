@@ -27,6 +27,8 @@ jobs:
       run: |
         npm run build
         electron-builder --mac
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
       
     - name: Create Release
       uses: softprops/action-gh-release@v1
@@ -36,4 +38,4 @@ jobs:
           dist/*.dmg
           dist/*.zip
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} 
