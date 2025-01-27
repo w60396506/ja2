@@ -4,8 +4,7 @@ directories:
   output: dist
   buildResources: build
 mac:
-  target: 
-    - dmg
+  target: dmg
   identity: null
   icon: build/icon.icns
 dmg:
