@@ -26,42 +26,17 @@ process.on('uncaughtException', (error) => {
 function createWindow() {
     try {
         mainWindow = new BrowserWindow({
-            width: 422,
-            height: 622,
-            resizable: false,
-            frame: false,
-            transparent: true,
-            backgroundColor: '#00000000',
-            hasShadow: true,
-            show: false,  // 先不显示窗口
+            width: 800,
+            height: 600,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                enableRemoteModule: true
+                contextIsolation: false
             }
         });
 
         console.log('窗口创建成功');
 
         require('@electron/remote/main').enable(mainWindow.webContents);
-
-        // 添加开发者工具快捷键
-        mainWindow.webContents.on('before-input-event', (event, input) => {
-            // Ctrl+Shift+I 或 Command+Option+I
-            if ((input.control && input.shift && input.key.toLowerCase() === 'i') || 
-                (input.meta && input.alt && input.key.toLowerCase() === 'i')) {
-                console.log('打开开发者工具');
-                mainWindow.webContents.openDevTools();
-                event.preventDefault();
-            }
-        });
-
-        // 或者直接添加快捷键
-        mainWindow.webContents.on('keydown', (event) => {
-            if (event.ctrlKey && event.shiftKey && event.code === 'KeyI') {
-                mainWindow.webContents.openDevTools();
-            }
-        });
 
         // 添加页面加载事件
         mainWindow.webContents.on('did-finish-load', () => {
@@ -89,19 +64,35 @@ app.whenReady().then(() => {
         
         // 获取应用程序根目录
         const rootPath = app.isPackaged 
-            ? path.dirname(process.execPath)
+            ? path.join(process.resourcesPath, 'app')
             : __dirname;
         
-        // 数据库路径始终在根目录
+        // 在连接数据库之前检查
+        const dbTemplatePath = path.join(rootPath, 'soundbuttons.db.template');
         const dbPath = path.join(rootPath, 'soundbuttons.db');
-        console.log('数据库路径:', dbPath);
 
-        // 检查文件权限
-        try {
-            fs.accessSync(dbPath, fs.constants.R_OK | fs.constants.W_OK);
-            console.log('数据库文件权限正常');
-        } catch (err) {
-            console.error('数据库文件权限错误:', err);
+        if (!fs.existsSync(dbPath) && fs.existsSync(dbTemplatePath)) {
+            try {
+                // 复制模板文件
+                fs.copyFileSync(dbTemplatePath, dbPath);
+                console.log('已从模板创建数据库文件');
+            } catch (err) {
+                console.error('复制数据库模板失败:', err);
+                dialog.showErrorBox('错误', '无法创建数据库文件');
+                app.quit();
+                return;
+            }
+        } else if (!fs.existsSync(dbPath)) {
+            // 如果没有模板文件，创建新的数据库
+            try {
+                await createDatabase(dbPath);
+                console.log('成功创建新数据库');
+            } catch (err) {
+                console.error('创建数据库失败:', err);
+                dialog.showErrorBox('错误', '无法创建数据库文件');
+                app.quit();
+                return;
+            }
         }
 
         // 先创建窗口
@@ -110,32 +101,45 @@ app.whenReady().then(() => {
         // 连接数据库并保持连接
         db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
             if (err) {
-                console.error('数据库连接失败:', err);
-            } else {
-                console.log('数据库连接成功');
-                // 检查表是否存在
-                db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='sound_buttons'", [], (err, row) => {
-                    if (err) {
-                        console.error('检查表失败:', err);
-                    } else {
-                        if (!row) {
-                            console.error('sound_buttons 表不存在');
-                        } else {
-                            console.log('sound_buttons 表存在');
-                            // 验证表结构
-                            db.all("PRAGMA table_info(sound_buttons)", [], (err, columns) => {
-                                if (err) {
-                                    console.error('获取表结构失败:', err);
-                                } else {
-                                    console.log('表结构:', columns);
-                                    // 初始化快捷键
-                                    initShortcuts();
-                                }
-                            });
-                        }
-                    }
+                console.error('数据库连接失败:', {
+                    error: err,
+                    code: err.code,
+                    message: err.message,
+                    dbPath: dbPath,
+                    exists: fs.existsSync(dbPath),
+                    stats: fs.existsSync(dbPath) ? fs.statSync(dbPath) : null
                 });
+                
+                dialog.showErrorBox('数据库错误', 
+                    `无法连接到数据库:\n${err.message}\n路径: ${dbPath}`);
+                    
+                app.quit();
+                return;
             }
+            
+            console.log('数据库连接成功');
+            // 检查表是否存在
+            db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='sound_buttons'", [], (err, row) => {
+                if (err) {
+                    console.error('检查表失败:', err);
+                } else {
+                    if (!row) {
+                        console.error('sound_buttons 表不存在');
+                    } else {
+                        console.log('sound_buttons 表存在');
+                        // 验证表结构
+                        db.all("PRAGMA table_info(sound_buttons)", [], (err, columns) => {
+                            if (err) {
+                                console.error('获取表结构失败:', err);
+                            } else {
+                                console.log('表结构:', columns);
+                                // 初始化快捷键
+                                initShortcuts();
+                            }
+                        });
+                    }
+                }
+            });
         });
 
         // 确保程序退出时关闭数据库
@@ -149,6 +153,12 @@ app.whenReady().then(() => {
                         console.log('数据库已关闭');
                     }
                 });
+            }
+        });
+
+        app.on('activate', () => {
+            if (BrowserWindow.getAllWindows().length === 0) {
+                createWindow();
             }
         });
 
