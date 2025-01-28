@@ -1,12 +1,26 @@
-appId: com.electron.ja2
-productName: JACS
+appId: com.jaxxx.app
+productName: Jaxxx
 directories:
   output: dist
   buildResources: build
+files:
+  - "**/*"
+  - "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}"
+  - "!.editorconfig"
+  - "!**/._*"
+  - "!.git"
+  - "!.hg"
+  - "!.svn"
 mac:
   target: dmg
-  identity: null
   icon: build/icon.icns
+  extraResources:
+    - from: "soundbuttons.db"
+      to: "soundbuttons.db"
+  extraFiles:
+    - filter:
+        - "soundbuttons.db"
+afterPack: "./scripts/after-pack.js"
 dmg:
   contents:
     - x: 130
