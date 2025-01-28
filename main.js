@@ -85,7 +85,7 @@ app.whenReady().then(() => {
         } else if (!fs.existsSync(dbPath)) {
             // 如果没有模板文件，创建新的数据库
             try {
-                await createDatabase(dbPath);
+                createDatabase(dbPath);
                 console.log('成功创建新数据库');
             } catch (err) {
                 console.error('创建数据库失败:', err);
