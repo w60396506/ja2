@@ -8,6 +8,8 @@ files:
 mac:
   target: dmg
   icon: build/icon.icns
+  darkModeSupport: true
+  minimumSystemVersion: "10.13.0"
   extraResources:
     - from: "soundbuttons.db"
       to: "soundbuttons.db"
