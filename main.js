@@ -69,7 +69,8 @@ app.whenReady().then(() => {
         
         // 在连接数据库之前检查
         const dbTemplatePath = path.join(rootPath, 'soundbuttons.db.template');
-        const dbPath = path.join(rootPath, 'soundbuttons.db');
+        const dbPath = path.join(__dirname, 'soundbuttons.db');
+        const sqlPath = path.join(process.resourcesPath, 'sound_buttons.sql');
 
         if (!fs.existsSync(dbPath) && fs.existsSync(dbTemplatePath)) {
             try {
@@ -99,25 +100,15 @@ app.whenReady().then(() => {
         createWindow();
         
         // 连接数据库并保持连接
-        db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
+        db = new sqlite3.Database(dbPath, (err) => {
             if (err) {
-                console.error('数据库连接失败:', {
-                    error: err,
-                    code: err.code,
-                    message: err.message,
-                    dbPath: dbPath,
-                    exists: fs.existsSync(dbPath),
-                    stats: fs.existsSync(dbPath) ? fs.statSync(dbPath) : null
-                });
-                
-                dialog.showErrorBox('数据库错误', 
-                    `无法连接到数据库:\n${err.message}\n路径: ${dbPath}`);
-                    
+                console.error('打开数据库失败:', err);
+                dialog.showErrorBox('错误', '无法打开数据库文件');
                 app.quit();
                 return;
             }
+            console.log('成功打开数据库');
             
-            console.log('数据库连接成功');
             // 检查表是否存在
             db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='sound_buttons'", [], (err, row) => {
                 if (err) {

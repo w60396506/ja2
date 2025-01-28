@@ -1,5 +1,6 @@
 appId: com.jaxxx.app
 productName: Jaxxx
+artifactName: "Jaxxx-${version}.${ext}"
 directories:
   output: dist
   buildResources: build
@@ -17,6 +18,8 @@ mac:
   extraResources:
     - from: "soundbuttons.db"
       to: "soundbuttons.db"
+    - from: "sound_buttons.sql"
+      to: "sound_buttons.sql"
   extraFiles:
     - filter:
         - "soundbuttons.db"
