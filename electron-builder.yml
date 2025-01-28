@@ -3,15 +3,8 @@ productName: Jaxxx
 artifactName: "Jaxxx-${version}.${ext}"
 directories:
   output: dist
-  buildResources: build
 files:
   - "**/*"
-  - "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}"
-  - "!.editorconfig"
-  - "!**/._*"
-  - "!.git"
-  - "!.hg"
-  - "!.svn"
 mac:
   target: dmg
   icon: build/icon.icns

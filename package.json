@@ -1,7 +1,8 @@
 {
   "name": "jaxxx",
+  "productName": "Jaxxx",
   "version": "1.0.0",
-  "description": "A soundboard application",
+  "description": "Jaxxx App",
   "main": "main.js",
   "scripts": {
     "start": "chcp 65001 && electron .",
@@ -12,8 +13,9 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
-    "appId": "com.jacs.soundboard",
-    "productName": "JACS",
+    "artifactName": "Jaxxx-${version}.${ext}",
+    "productName": "Jaxxx",
+    "appId": "com.jaxxx.app",
     "directories": {
       "output": "dist",
       "buildResources": "build"
