@@ -73,6 +73,7 @@
   },
   "dependencies": {
     "@electron/remote": "^2.1.2",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.0.2",
+    "better-sqlite3": "^7.4.3"
   }
 }
