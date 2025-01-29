@@ -10,7 +10,7 @@
     "build:mac": "electron-builder --mac --x64",
     "dist": "electron-builder",
     "pack": "electron-builder --dir",
-    "postinstall": "install-app-deps",
+    "postinstall": "electron-builder install-app-deps",
     "rebuild": "electron-rebuild -f -w sqlite3"
   },
   "build": {
@@ -68,11 +68,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^11.5.0",
+    "electron": "^9.4.4",
     "electron-builder": "^22.11.7"
   },
   "dependencies": {
     "@electron/remote": "^2.1.2",
-    "sqlite3": "^5.0.0"
+    "sqlite3": "^4.2.0"
   }
 }
