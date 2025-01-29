@@ -10,8 +10,8 @@
     "build:mac": "electron-builder --mac --x64",
     "dist": "electron-builder",
     "pack": "electron-builder --dir",
-    "postinstall": "electron-builder install-app-deps",
-    "rebuild": "electron-rebuild -f -w better-sqlite3"
+    "postinstall": "install-app-deps",
+    "rebuild": "electron-rebuild -f -w sqlite3"
   },
   "build": {
     "artifactName": "Jaxxx-${version}.${ext}",
@@ -69,11 +69,10 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^11.5.0",
-    "electron-builder": "^22.11.7",
-    "@electron/rebuild": "^3.6.0"
+    "electron-builder": "^22.11.7"
   },
   "dependencies": {
     "@electron/remote": "^2.1.2",
-    "better-sqlite3": "^7.4.3"
+    "sqlite3": "^5.0.0"
   }
 }
