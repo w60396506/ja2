@@ -10,7 +10,8 @@
     "build:mac": "electron-builder --mac --x64",
     "dist": "electron-builder",
     "pack": "electron-builder --dir",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "rebuild": "electron-rebuild -f -w better-sqlite3"
   },
   "build": {
     "artifactName": "Jaxxx-${version}.${ext}",
